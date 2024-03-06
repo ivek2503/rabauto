@@ -1,0 +1,41 @@
+.error-box {
+	border: 1px solid #ff0000;
+	background-color: #ffe6e6;
+	padding: 10px;
+	margin-bottom: 10px;
+	color: #ff0000;
+}
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #ead4d6;
+	color: #ead4d6;
+}
+.navbar-nav > li {
+	margin-right: 10px; 
+  }
+  
+  .navbar-nav > li:last-child {
+	margin-left: 50px;
+	margin-right: 50px;
+  }
+  .navbar-brand{
+	margin-left: 50px;
+  }
+  .c-item {
+  height: 480px;
+}
+
+.c-img {
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+.success-message {
+	text-align: center; /* Poruka će biti poravnata na sredinu */
+	margin-top: 100px; /* Prilagodite margine prema potrebi */
+}
+
+.success-message h1 {
+	font-size: 3em; /* Prilagodite veličinu fonta prema potrebi */
+}
+  

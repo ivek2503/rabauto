@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Primer</title>
+    <style>
+        /* Dodajte stilove prema vašim potrebama */
+        body {
+            text-align: center;
+            padding: 50px;
+        }
+
+        input[type="range"] {
+            width: 80%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Slider Primer</h2>
+
+    <!-- Dodajte slider -->
+    <input type="range" min="0" max="100" value="50" id="mySlider">
+
+    <!-- Prikaz vrednosti slidera -->
+    <p>Vrednost: <span id="sliderValue">50</span></p>
+
+    <script>
+        // Dodajte skriptu za ažuriranje vrednosti slidera
+        var slider = document.getElementById("mySlider");
+        var output = document.getElementById("sliderValue");
+
+        // Prikazivanje trenutne vrednosti slidera
+        output.innerHTML = slider.value;
+
+        // Ažuriranje vrednosti kada se slider pomeri
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        };
+    </script>
+
+</body>
+</html>

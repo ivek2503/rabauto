@@ -54,10 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method="post">
         <label for="email">email</label>
         <input type="email" name="email_adresa" id="email_adresa"
-               value="<?= htmlspecialchars($_POST["email_adresa"] ?? "") ?>">
+               value="<?= htmlspecialchars($_POST["email_adresa"] ?? "") ?>"  required>
         
         <label for="password">Password</label>
-        <input type="password" name="password" id="password">
+        <input type="password" name="password" id="password" required>
         
         <button>Prijava</button>
     </form>

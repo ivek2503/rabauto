@@ -126,27 +126,27 @@
     <form action="signup.php" method="post" id="signup" novalidate>
         <div>
             <label for="name">ime</label>
-            <input type="text" id="ime" name="ime">
+            <input type="text" id="ime" name="ime" required>
         </div>
         <div>
             <label for="name">prezime</label>
-            <input type="text" id="prezime" name="prezime">
+            <input type="text" id="prezime" name="prezime" required>
         </div>
         <div>
             <label for="name">korisničko ime</label>
-            <input type="text" id="username" name="username">
+            <input type="text" id="username" name="username" required>
         </div>
         <div>
             <label for="email">email</label>
-            <input type="email" id="email_adresa" name="email_adresa">
+            <input type="email" id="email_adresa" name="email_adresa" required>
         </div>
         <div>
             <label for="password">lozinka</label>
-            <input type="password" id="password" name="password">
+            <input type="password" id="password" name="password" required>
         </div>
         <div>
             <label for="password_confirmation">ponovi lozinku</label>
-            <input type="password" id="password_confirmation" name="password_confirmation">
+            <input type="password" id="password_confirmation" name="password_confirmation" required>
         </div>
         <button>Sign up</button>
     </form>

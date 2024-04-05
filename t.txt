@@ -1,0 +1,43 @@
+function dodajDodatniDropdown() {
+    var dodatniDropdown = document.createElement('div');
+    dodatniDropdown.classList.add('mb-3');
+
+    var selectElement = document.createElement('select');
+    selectElement.classList.add('form-select');
+    var currentIndex = document.querySelectorAll('select[name^="dodatna_marka"]').length + 1; // Pronađi trenutni broj dodatnih dropdownova
+    var dropdownId = 'dodatna_marka_' + currentIndex; // Jedinstveni identifikator dropdowna
+    selectElement.name = dropdownId; // Ime atributa za formu
+    selectElement.innerHTML = '<option value="">Odaberite marku</option>';
+    
+    // Dodajte ovdje opcije za marku automobila
+    <?php foreach ($marke as $id => $naziv_marke) : ?>
+        selectElement.innerHTML += '<option value="<?php echo $id; ?>"><?php echo $naziv_marke; ?></option>';
+    <?php endforeach; ?>
+
+    // Dodajte dropdown u div
+    dodatniDropdown.appendChild(selectElement);
+
+    // Dodajte dodatni dropdown ispod postojećeg dropdowna marke
+    var markeDiv = document.getElementById('marke');
+    markeDiv.appendChild(dodatniDropdown);
+
+    // Pozovite funkciju odabirMarke kako bi se uklonila odabrana marka iz dodatnog dropdowna
+    odabirMarke(dropdownId);
+}
+
+function odabirMarke() {
+    var selectedMarka = document.getElementById('marka').value;
+    var dropdownsToCheck = document.querySelectorAll('select[name^="dodatna_marka"]');
+
+    // Iterirajte kroz sve dropdownove marki, uključujući i prvi dropdown
+    dropdownsToCheck.forEach(function(dropdown) {
+        // Uklonite odabranu marku iz svih dropdownova
+        var optionsToRemove = dropdown.querySelectorAll('option[value="' + selectedMarka + '"]');
+        optionsToRemove.forEach(function(option) {
+            option.remove();
+        });
+    });
+}
+
+
+            document.getElementById('marka').addEventListener('change', odabirMarke);

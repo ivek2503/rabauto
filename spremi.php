@@ -16,7 +16,7 @@ if (!isset($_SESSION["user_id"])) {
 }
 echo var_dump($_POST);
 // Provjera jesu li svi potrebni podaci prisutni
-if (isset($_POST['model_id'], $_POST['godiste'], $_POST['kilometraza'], $_POST['cijena'], $_POST['snaga'], $_POST['opis'])) {
+if (isset($_POST['model_id'], $_POST['godiste'], $_POST['kilometraza'], $_POST['cijena'], $_POST['snaga'], $_POST['opis'],$_POST['zupanija'])) {
     // Podaci iz obrasca
     echo "bokic";
     $model = $_POST['model_id'];
@@ -25,13 +25,14 @@ if (isset($_POST['model_id'], $_POST['godiste'], $_POST['kilometraza'], $_POST['
     $cijena = $_POST['cijena'];
     $snaga = $_POST['snaga'];
     $opis = $_POST['opis'];
+    $zupanija = $_POST['zupanija'];
     $prodavac_id = $_SESSION["user_id"]; // ID prodavatelja dobiven iz sesije
 
     
     $datum = date("Y-m-d");
 
     // Unos oglasa
-    $sql = "INSERT INTO oglasi (cijena, opis, godiste, kilometraza, snaga, datum_objave, ID_prodavaca, id_modela, aktivan) VALUES ($cijena, '$opis', $godiste, $kilometraza, $snaga, '$datum', $prodavac_id, $model, true)";
+    $sql = "INSERT INTO oglasi (cijena, opis, godiste, kilometraza, snaga, datum_objave, ID_prodavaca, id_modela,zupanija, aktivan) VALUES ($cijena, '$opis', $godiste, $kilometraza, $snaga, '$datum', $prodavac_id, $model,$zupanija, true)";
 
     if ($mysqli->query($sql) == true) {
         $oglas_id = $mysqli->insert_id; // ID novog oglasa

@@ -38,4 +38,16 @@
 .success-message h1 {
 	font-size: 3em; /* Prilagodite veličinu fonta prema potrebi */
 }
-  
+
+.card-img-top {
+    width: 100%; /* Postavljanje širine slike na 100% kartice */
+    height: 300px; /* Postavljanje fiksne visine slike */
+    object-fit: cover; /* Slika će zauzeti cijeli prostor i zadržati omjer širine i visine */
+}
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	
+  }

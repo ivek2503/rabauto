@@ -20,27 +20,7 @@ if (!isset($_SESSION["user_id"])) {
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="pocetna.php">RabAUTO</a>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="pronadi.php">Pronađi</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="objavi.php">Objavi</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="racun.php">Račun</a>
-        </li>
-        <li class="nav-item">
-          <button class="btn btn-danger ml-2" onclick="odjava()">Odjavi se</button>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php include "nav.php";?>
 
 
 
@@ -117,32 +97,9 @@ if (!isset($_SESSION["user_id"])) {
     </div>
   </div>
 </div><br><br><br><br><br>
-<footer class="bg-dark text-white py-4">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <p>Stranica za završni rad - Ivan Magdalenić</p>
-      </div>
-      <div class="col-md-6 text-end">
-        <button onclick="topFunction()" id="back-to-top-btn" class="btn btn-light"><i class="fas fa-arrow-up"></i> Povratak na vrh</button>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-md-6">
-        <ul class="list-inline">
-          <li class="list-inline-item"><a href="https://www.facebook.com/ivan.magdalenic.3" class="text-white"><i class="fab fa-facebook-square"></i></a></li>
-          <li class="list-inline-item"><a href="https://www.instagram.com/magdalenic25?igsh=MXNqN2VxMWFpM3V2MQ%3D%3D&utm_source=qr" class="text-white"><i class="fab fa-instagram"></i></a></li>
-          
-        </ul>
-      </div>
-      <div class="col-md-6 text-end">
-        <p>&copy; 2024 Ivan Magdalenić</p>
-      </div>
-    </div>
-  </div>
-</footer>
+<?php include "footer.php"?>
 
-<!--bokic-->
+
 
 
 <script>

@@ -25,6 +25,16 @@ while ($row = $result->fetch_assoc()) {
     $marke[$row['ID_marke']] = $row['naziv_marke'];
 }
 
+// Izvršite upit za dohvaćanje županija
+$sql_zupanije = "SELECT * FROM zupanije ORDER BY naziv ASC";
+$result_zupanije = $mysqli->query($sql_zupanije);
+
+// Spremite rezultate u asocijativno polje
+$zupanije = [];
+while ($row_zupanije = $result_zupanije->fetch_assoc()) {
+    $zupanije[$row_zupanije['id_zupanije']] = $row_zupanije['naziv'];
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -40,27 +50,7 @@ while ($row = $result->fetch_assoc()) {
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="pocetna.php">RabAUTO</a>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="pronadi.php">Pronađi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="objavi.php">Objavi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="racun.php">Račun</a>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-danger ml-2" onclick="odjava()">Odjavi se</button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<?php include "nav.php";?>
     <br><br>
     <div class="container">
         <h1 class="mt-5 mb-3">Unos podataka o automobilu</h1>
@@ -80,6 +70,16 @@ while ($row = $result->fetch_assoc()) {
                     <option value="">Odaberite model</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="zupanija" class="form-label">Županija</label>
+                <select class="form-select" id="zupanija" name="zupanija" required>
+                    <option value="">Odaberite županiju</option>
+                    <?php foreach ($zupanije as $id_zupanije => $naziv) : ?>
+                        <option value="<?php echo $id_zupanije; ?>"><?php echo $naziv; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
 
             <div class="mb-3">
                 <label for="godiste" class="form-label">Godište automobila</label>
@@ -119,30 +119,7 @@ while ($row = $result->fetch_assoc()) {
         </form>
     </div>
 
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p>Stranica za završni rad - Ivan Magdalenić</p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <button onclick="topFunction()" id="back-to-top-btn" class="btn btn-light"><i class="fas fa-arrow-up"></i> Povratak na vrh</button>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <ul class="list-inline">
-                        <li class="list-inline-item"><a href="https://www.facebook.com/ivan.magdalenic.3" class="text-white"><i class="fab fa-facebook-square"></i></a></li>
-                        <li class="list-inline-item"><a href="https://www.instagram.com/magdalenic25?igsh=MXNqN2VxMWFpM3V2MQ%3D%3D&utm_source=qr" class="text-white"><i class="fab fa-instagram"></i></a></li>
-
-                    </ul>
-                </div>
-                <div class="col-md-6 text-end">
-                    <p>&copy; 2024 Ivan Magdalenić</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include "footer.php"?>
     <script>
         function topFunction() {
             document.body.scrollTop = 0;

@@ -14,122 +14,82 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
     exit;
 }
+$is_admin = false;
+$user_id = $_SESSION["user_id"];
+$sql_check_admin = "SELECT admin FROM korisnici WHERE ID = $user_id";
+$result_check_admin = $mysqli->query($sql_check_admin);
 
-// Izvršite upit za dohvaćanje marki automobila
-$sql = "SELECT * FROM marke ORDER BY naziv_marke ASC";
+if ($result_check_admin->num_rows > 0) {
+    $row = $result_check_admin->fetch_assoc();
+    $is_admin = $row['admin'] == 1;
+}
+
+// Ako korisnik nije administrator, preusmjeri ga na drugu stranicu
+
+$user_id = $_SESSION["user_id"];
+
+// Izvršavanje upita za dohvaćanje podataka o korisniku iz baze
+$sql = "SELECT ime, prezime, username, email_adresa FROM korisnici WHERE id = $user_id";
 $result = $mysqli->query($sql);
 
-// Spremite rezultate u asocijativno polje
-$marke = [];
-while ($row = $result->fetch_assoc()) {
-    $marke[$row['ID_marke']] = $row['naziv_marke'];
+// Provjera jesu li podaci o korisniku pronađeni
+if ($result->num_rows > 0) {
+    // Dohvaćanje podataka o korisniku
+    $row = $result->fetch_assoc();
+    $ime = $row["ime"];
+    $prezime = $row["prezime"];
+    $username = $row["username"];
+    $email = $row["email_adresa"];
+} else {
+    echo "Nema podataka o korisniku.";
 }
-
-// Izvršite upit za dohvaćanje županija
-$sql_zupanije = "SELECT * FROM zupanije ORDER BY naziv ASC";
-$result_zupanije = $mysqli->query($sql_zupanije);
-
-// Spremite rezultate u asocijativno polje
-$zupanije = [];
-while ($row_zupanije = $result_zupanije->fetch_assoc()) {
-    $zupanije[$row_zupanije['id_zupanije']] = $row_zupanije['naziv'];
-}
-
-// Provjera je li zahtjev poslan metodom POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Dohvaćanje vrijednosti iz forme
-    $marka = $_POST['marka'];
-    $model = $_POST['model'];
-    $zupanija = $_POST['zupanija'];
-    $minGodiste = $_POST['min_godiste'];
-    $maxGodiste = $_POST['max_godiste'];
-    $minKilometraza = $_POST['min_kilometraza'];
-    $maxKilometraza = $_POST['max_kilometraza'];
-    $minCijena = $_POST['min_cijena'];
-    $maxCijena = $_POST['max_cijena'];
-    $minSnaga = $_POST['min_snaga'];
-    $maxSnaga = $_POST['max_snaga'];
-
-    // Sastavljanje SQL upita za pretraživanje oglasa prema odabranim kriterijima
-    $sql = "SELECT oglasi.*, modeli.*, marke.naziv_marke AS marka 
-        FROM oglasi 
-        INNER JOIN modeli ON oglasi.id_modela = modeli.id_modela 
-        INNER JOIN marke ON modeli.id_marke = marke.id_marke 
-        WHERE aktivan = 1"; // Početni SQL upit
-
-
-    //var_dump($marka);
-    //var_dump($model);
-    // Dodavanje uvjeta u SQL upit prema odabranim kriterijima
-    if (!empty($marka)) {
-        $sql .= " AND marke.ID_marke = '$marka'";
-    }
-    if (!empty($model)) {
-        // Dodaj uvjet za pretraživanje oglasa prema ID-u modela
-        $sql .= " AND oglasi.id_modela = $model";
-    }
-
-    if (!empty($zupanija)) {
-        $sql .= " AND zupanija = '$zupanija'";
-    }
-    if (!empty($minGodiste)) {
-        $sql .= " AND godiste >= '{$minGodiste}'";
-    }
-    if (!empty($maxGodiste)) {
-        $sql .= " AND godiste <= '{$maxGodiste}'";
-    }
-    if (!empty($minKilometraza)) {
-        $sql .= " AND kilometraza >= '{$minKilometraza}'";
-    }
-    if (!empty($maxKilometraza)) {
-        $sql .= " AND kilometraza <= '{$maxKilometraza}'";
-    }
-    if (!empty($minCijena)) {
-        $sql .= " AND cijena >= '{$minCijena}'";
-    }
-    if (!empty($maxCijena)) {
-        $sql .= " AND cijena <= '{$maxCijena}'";
-    }
-    if (!empty($minSnaga)) {
-        $sql .= " AND snaga >= '{$minSnaga}'";
-    }
-    if (!empty($maxSnaga)) {
-        $sql .= " AND snaga <= '{$maxSnaga}'";
-    }
-
-    // Izvršavanje SQL upita i dohvaćanje rezultata
-    $result_oglasi = $mysqli->query($sql);
-
-}
+$sql_oglasi = "SELECT oglasi.*, modeli.*, marke.naziv_marke AS marka 
+FROM oglasi 
+INNER JOIN modeli ON oglasi.id_modela = modeli.id_modela 
+INNER JOIN marke ON modeli.id_marke = marke.id_marke WHERE id_prodavaca = $user_id";
+$result_oglasi = $mysqli->query($sql_oglasi);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RabAUTO - REZULTATI</title>
+    <title>Rabauto - RAČUN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
-
 <body>
-    <?php include "nav.php"; ?>
-    <br><br>
-    <div class="container" style="min-height: 100vh;">
-        <h1 class="mt-5 mb-3">Pretraži oglase</h1>
-        
-
-        <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
-            <!-- Prikaz rezultata pretraživanja -->
-            <?php if ($result_oglasi->num_rows > 0) : ?>
-                <h2>Rezultati pretraživanja:</h2>
-                <ul>
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
-                        <?php while ($row_oglas = $result_oglasi->fetch_assoc()) : ?>
+    <?php include "nav.php"?><br><br><br>
+    <div class="container" style="min-height: 100vh; text-align:center;">
+    <?php
+    if ($is_admin) {
+        ?>
+        <a href="admin.php"><button class="btn btn-primary" >ADMIN PANEL</button></a>
+        <?php
+    }
+    ?>
+        <div class="row mt-5">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Vaši korisnički podaci</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Ime:</strong> <?php echo $ime; ?></p>
+                        <p class="card-text"><strong>Prezime:</strong> <?php echo $prezime; ?></p>
+                        <p class="card-text"><strong>Username:</strong> <?php echo $username; ?></p>
+                        <p class="card-text"><strong>Email:</strong> <?php echo $email; ?></p>
+                    </div>
+                </div>
+            </div>
+        </div><br><hr>
+        <div class="row mt-5">
+            <div class="col">
+                <h2>Povijest vaših oglasa: </h2>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                <?php while ($row_oglas = $result_oglasi->fetch_assoc()) : ?>
                             <?php
                             $marka = $row_oglas['marka'];
                             $model = $row_oglas['naziv_modela'];
@@ -151,8 +111,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 $slika_url = "nema-slike.jpg";
                             }
+                            
                             ?>
 
+                            <!-- Kartica za prikaz oglasa -->
                             <div class="col">
                                 <a href="oglas.php?id=<?php echo $oglas_id; ?>" style="text-decoration:none;">
                                 <div class="card">
@@ -169,23 +131,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 
                             </div>
 
-                        <?php endwhile; ?>
-                    </div>
-
-
-
-                </ul>
-            <?php else : ?>
-                <p>Nema rezultata za odabrane kriterije pretraživanja.</p>
-            <?php endif; ?>
-        <?php endif; ?>
+                        <?php endwhile; ?><br>
+                </div><br>
+            </div>
+        </div>
     </div>
-    <?php include "footer.php" ?>
+    <?php include "footer.php"?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
-
 </html>

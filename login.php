@@ -25,7 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             $_SESSION["user_id"] = $user["ID"];
             
-            header("Location: index.php");
+            if ($user["admin"] == 1) {
+                header("Location: admin.php");
+            } else {
+                header("Location: index.php");
+            }
             exit;
         }
     }

@@ -346,6 +346,10 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                             var models = JSON.parse(xhr.responseText);
 
                             // Dodaj svaki model u padajući izbornik
+                            var option = document.createElement('option');
+                            option.text = "Odaberite model";
+                            option.value = "";
+                            modelDropdown.add(option);
                             models.forEach(function(model) {
                                 var option = document.createElement('option');
                                 option.text = model.naziv_modela;

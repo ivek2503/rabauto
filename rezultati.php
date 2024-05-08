@@ -89,39 +89,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($maxSnaga)) {
         $sql .= " AND snaga <= '{$maxSnaga}'";
     }
-    if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
-        $sort = isset($_GET['sort']) ? $_GET['sort'] : ''; 
-    
-        switch ($sort) {
-            case 'kilometraza_asc':
-                $sql .= " ORDER BY kilometraza ASC";
-                break;
-            case 'kilometraza_desc':
-                $sql .= " ORDER BY kilometraza DESC";
-                break;
-            case 'godiste_asc':
-                $sql .= " ORDER BY godiste ASC";
-                break;
-            case 'godiste_desc':
-                $sql .= " ORDER BY godiste DESC";
-                break;
-            case 'cijena_asc':
-                $sql .= " ORDER BY cijena ASC";
-                break;
-            case 'cijena_desc':
-                $sql .= " ORDER BY cijena DESC";
-                break;
-            default:
 
-                $sql .= " ORDER BY ID ASC";
-                break;
-        }
-    }}
-    
-    //var_dump($sql);
-    // Izvršavanje SQL upita i dohvaćanje rezultata
-    $result_oglasi = $mysqli->query($sql);
+
+    $sort = isset($_POST['sort']) ? $_POST['sort'] : '';
+
+    switch ($sort) {
+        case 'kilometraza_asc':
+            $sql .= " ORDER BY kilometraza ASC";
+            break;
+        case 'kilometraza_desc':
+            $sql .= " ORDER BY kilometraza DESC";
+            break;
+        case 'godiste_asc':
+            $sql .= " ORDER BY godiste ASC";
+            break;
+        case 'godiste_desc':
+            $sql .= " ORDER BY godiste DESC";
+            break;
+        case 'cijena_asc':
+            $sql .= " ORDER BY cijena ASC";
+            break;
+        case 'cijena_desc':
+            $sql .= " ORDER BY cijena DESC";
+            break;
+        default:
+
+            // $sql .= " ORDER BY ID ASC";
+            break;
+    }
+}
+
+// var_dump($sql);
+// Izvršavanje SQL upita i dohvaćanje rezultata
+$result_oglasi = $mysqli->query($sql);
 
 
 ?>
@@ -146,26 +147,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <br><br>
     <div class="container" style="min-height: 100vh;">
         <h1 class="mt-5 mb-3">Pretraži oglase</h1>
-        
+
 
         <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
             <!-- Prikaz rezultata pretraživanja -->
             <?php if ($result_oglasi->num_rows > 0) : ?>
                 <h2>Rezultati pretraživanja:</h2><br>
-                <form method="GET" action="">
-    <div class="form-group">
-        <label for="sort">Sortiraj po:</label>
-        <select class="form-select" name="sort" id="sort">
-    <option value="kilometraza_asc"> Kilometraža - od najmanje</option>
-    <option value="kilometraza_desc"> Kilometraža - od najveće</option>
-    <option value="godiste_asc"> Godište - od najstarijeg</option>
-    <option value="godiste_desc"> Godište - od najmlađeg</option>
-    <option value="cijena_asc"> Cijena - od najmanje</option>
-    <option value="cijena_desc"> Cijena - od najveće</option>
-</select>
+                <form method="POST" action="">
 
-    </div>
-</form><br>
+                    <?php if (isset($_POST['marka'])) : ?> <input type="hidden" name="marka" value="<?php echo $_POST['marka']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['model'])) : ?> <input type="hidden" name="model" value="<?php echo $_POST['model']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['zupanija'])) : ?> <input type="hidden" name="zupanija" value="<?php echo $_POST['zupanija']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['min_godiste'])) : ?> <input type="hidden" name="min_godiste" value="<?php echo $_POST['min_godiste']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['max_godiste'])) : ?> <input type="hidden" name="max_godiste" value="<?php echo $_POST['max_godiste']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['min_kilometraza'])) : ?> <input type="hidden" name="min_kilometraza" value="<?php echo $_POST['min_kilometraza']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['max_kilometraza'])) : ?> <input type="hidden" name="max_kilometraza" value="<?php echo $_POST['max_kilometraza']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['min_cijena'])) : ?> <input type="hidden" name="min_cijena" value="<?php echo $_POST['min_cijena']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['max_cijena'])) : ?> <input type="hidden" name="max_cijena" value="<?php echo $_POST['max_cijena']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['min_snaga'])) : ?> <input type="hidden" name="min_snaga" value="<?php echo $_POST['min_snaga']; ?>"> <?php endif; ?>
+                    <?php if (isset($_POST['max_snaga'])) : ?> <input type="hidden" name="max_snaga" value="<?php echo $_POST['max_snaga']; ?>"> <?php endif; ?>
+
+                    <div class="form-group">
+                        <label for="sort">Sortiraj po:</label>
+                        <select class="form-select" name="sort" id="sort">
+                            <option value="">Odaberi filter</option>
+                            <option value="kilometraza_asc"> Kilometraža - od najmanje</option>
+                            <option value="kilometraza_desc"> Kilometraža - od najveće</option>
+                            <option value="godiste_asc"> Godište - od najstarijeg</option>
+                            <option value="godiste_desc"> Godište - od najmlađeg</option>
+                            <option value="cijena_asc"> Cijena - od najmanje</option>
+                            <option value="cijena_desc"> Cijena - od najveće</option>
+                        </select>
+
+                    </div>
+                </form><br>
                 <ul>
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <?php while ($row_oglas = $result_oglasi->fetch_assoc()) : ?>
@@ -194,18 +209,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="col">
                                 <a href="oglas.php?id=<?php echo $oglas_id; ?>" style="text-decoration:none;">
-                                <div class="card">
-                                    <img src="<?php echo $slika_url; ?>" class="card-img-top" alt="Slika oglasa">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><?php echo $marka . ' ' . $model; ?></h5><br>
-                                        <p class="card-text" style="color:gray;"><?php echo $row_oglas['kilometraza']; ?> km</p>
-                                        <hr>
-                                        <p class="card-text" style="color:gray;"><b><?php echo $row_oglas['cijena']; ?> €</b></p>
+                                    <div class="card">
+                                        <img src="<?php echo $slika_url; ?>" class="card-img-top" alt="Slika oglasa">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><?php echo $marka . ' ' . $model; ?></h5><br>
+                                            <p class="card-text" style="color:gray;"><?php echo $row_oglas['kilometraza']; ?> km</p>
+                                            <hr>
+                                            <p class="card-text" style="color:gray;"><b><?php echo $row_oglas['cijena']; ?> €</b></p>
 
+                                        </div>
                                     </div>
-                                </div>
                                 </a>
-                                
+
                             </div>
 
                         <?php endwhile; ?>

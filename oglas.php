@@ -222,68 +222,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
 
+    </div>
+    <?php include "footer.php" ?>
 
-        <?php include "footer.php" ?>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $(".oglasi-slika").click(function() {
-                    var slikaUrl = $(this).attr("src");
-                    $("#modalSlika").attr("src", slikaUrl);
-                    $("#slikaModal").modal("show");
-                });
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".oglasi-slika").click(function() {
+                var slikaUrl = $(this).attr("src");
+                $("#modalSlika").attr("src", slikaUrl);
+                $("#slikaModal").modal("show");
             });
-            $(document).ready(function() {
-                var currentIndex = 0;
-                var slike = <?php echo json_encode($slike); ?>;
-                var maxIndex = slike.length - 1;
-                $(document).keydown(function(e) {
-                    if (e.keyCode == 37) { // Strelica ulijevo
-                        currentIndex = (currentIndex === 0) ? maxIndex : currentIndex - 1;
-                        prikaziSliku(currentIndex);
-                    } else if (e.keyCode == 39) { // Strelica udesno
-                        currentIndex = (currentIndex === maxIndex) ? 0 : currentIndex + 1;
-                        prikaziSliku(currentIndex);
-                    }
-                });
-
-
-                $(".oglasi-slika").on("touchstart", function(e) {
-                    startX = e.changedTouches[0].pageX;
-                });
-
-                $(".oglasi-slika").on("touchmove", function(e) {
-                    var endX = e.changedTouches[0].pageX;
-                    var threshold = 50; // Minimalna udaljenost za detektiranje pokreta
-                    var deltaX = startX - endX;
-
-                    if (deltaX > threshold && currentIndex < maxIndex) {
-                        currentIndex++;
-                        prikaziSliku(currentIndex);
-                    } else if (deltaX < -threshold && currentIndex > 0) {
-                        currentIndex--;
-                        prikaziSliku(currentIndex);
-                    }
-                });
-
-                function prikaziSliku(index) {
-                    $(".oglasi-slika").attr("src", "slike/" + slike[index].url);
+        });
+        $(document).ready(function() {
+            var currentIndex = 0;
+            var slike = <?php echo json_encode($slike); ?>;
+            var maxIndex = slike.length - 1;
+            $(document).keydown(function(e) {
+                if (e.keyCode == 37) { // Strelica ulijevo
+                    currentIndex = (currentIndex === 0) ? maxIndex : currentIndex - 1;
+                    prikaziSliku(currentIndex);
+                } else if (e.keyCode == 39) { // Strelica udesno
+                    currentIndex = (currentIndex === maxIndex) ? 0 : currentIndex + 1;
+                    prikaziSliku(currentIndex);
                 }
             });
-            $(document).ready(function() {
-                $(".oglasi-slika").click(function() {
-                    var slikaUrl = $(this).attr("src");
-                    $("#modalSlika").attr("src", slikaUrl);
-                    $("#slikaModal").modal("show");
-                });
 
-                $(".mala-slika").click(function() {
-                    var slikaUrl = $(this).attr("src");
-                    $(".oglasi-slika").attr("src", slikaUrl);
-                });
+
+            $(".oglasi-slika").on("touchstart", function(e) {
+                startX = e.changedTouches[0].pageX;
             });
-        </script>
+
+            $(".oglasi-slika").on("touchmove", function(e) {
+                var endX = e.changedTouches[0].pageX;
+                var threshold = 50; // Minimalna udaljenost za detektiranje pokreta
+                var deltaX = startX - endX;
+
+                if (deltaX > threshold && currentIndex < maxIndex) {
+                    currentIndex++;
+                    prikaziSliku(currentIndex);
+                } else if (deltaX < -threshold && currentIndex > 0) {
+                    currentIndex--;
+                    prikaziSliku(currentIndex);
+                }
+            });
+
+            function prikaziSliku(index) {
+                $(".oglasi-slika").attr("src", "slike/" + slike[index].url);
+            }
+        });
+        $(document).ready(function() {
+            $(".oglasi-slika").click(function() {
+                var slikaUrl = $(this).attr("src");
+                $("#modalSlika").attr("src", slikaUrl);
+                $("#slikaModal").modal("show");
+            });
+
+            $(".mala-slika").click(function() {
+                var slikaUrl = $(this).attr("src");
+                $(".oglasi-slika").attr("src", slikaUrl);
+            });
+        });
+    </script>
 
 </body>
 

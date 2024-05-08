@@ -37,26 +37,24 @@ if (!isset($_SESSION["user_id"])) {
         <div class="carousel-caption top-0 mt-4">
           <p class="mt-5 fs-3 text-uppercase">Dobrodošli u svijet Rabljenih automobila!</p>
           <h1 class="display-1 fw-bolder text-capitalize">RabAUTO</h1>
-          <button class="btn btn-primary px-4 py-2 fs-5 mt-5">PRONAĐI</button>
-          <button class="btn btn-primary px-4 py-2 fs-5 mt-5">OBJAVI</button>
+          <a href="pronadi.php" class="btn btn-primary px-4 py-2 fs-5 mt-5">PRONAĐI</a>
+      <a href="objavi.php" class="btn btn-primary px-4 py-2 fs-5 mt-5">OBJAVI</a>
         </div>
       </div>
       <div class="carousel-item c-item">
-        <img src="https://images.unsplash.com/photo-1516466723877-e4ec1d736c8a?fit=crop&w=2134&q=100" class="d-block w-100 c-img" alt="Slide 2">
+        <img src="auti2.jpg" class="d-block w-100 c-img" alt="Slide 2">
         <div class="carousel-caption top-0 mt-4">
           <p class="text-uppercase fs-3 mt-5">želiš pronaći automobil koji prilići tebi? pritisni gumb <b>pronađi</b> i zabavi se!</p>
           <p class="display-1 fw-bolder text-capitalize">PRONAĐI AUTOMOBIL</p>
-          <button class="btn btn-primary px-4 py-2 fs-5 mt-5" data-bs-toggle="modal"
-            data-bs-target="#booking-modal">PRONAĐI</button>
+          <a href="pronadi.php" class="btn btn-primary px-4 py-2 fs-5 mt-5">PRONAĐI</a>
         </div>
       </div>
       <div class="carousel-item c-item">
-        <img src="https://images.unsplash.com/photo-1612686635542-2244ed9f8ddc?fit=crop&w=2070&q=100" class="d-block w-100 c-img" alt="Slide 3">
+        <img src="auti3.jpg" class="d-block w-100 c-img" alt="Slide 3">
         <div class="carousel-caption top-0 mt-4">
           <p class="text-uppercase fs-3 mt-5">želiš li objaviti svoj automobil na naš oglasnik? Pritisni gumb <b>objavi</b> i ubrzo će ti se javiti kupac!</p>
           <p class="display-1 fw-bolder text-capitalize">OBJAVI OGLAS</p>
-          <button class="btn btn-primary px-4 py-2 fs-5 mt-5" data-bs-toggle="modal"
-            data-bs-target="#booking-modal">OBJAVI</button>
+          <a href="objavi.php" class="btn btn-primary px-4 py-2 fs-5 mt-5">OBJAVI</a>
         </div>
       </div>
     </div>

@@ -105,9 +105,10 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                 <textarea class="form-control" id="opis" name="opis" rows="3" required></textarea>
             </div>
             <div class="mb-3">
-                <label for="slike" class="form-label">Priložite fotografije</label>
-                <input type="file" class="form-control" id="slike" name="slike[]" multiple accept="image/*" required>
-            </div>
+    <label for="slike" class="form-label">Priložite fotografije (maksimalno 3 slike)</label>
+    <input type="file" class="form-control" id="slike" name="slike[]" multiple accept="image/*" required maxlength="3">
+</div>
+
 
             <input type="hidden" id="model_id" name="model_id" value="">
             <button type="submit" class="btn btn-primary" onclick="postaviModelID()">OBJAVI</button><br><br>
@@ -168,6 +169,19 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
             // Postavljanje vrijednosti skrivenog input elementa na odabrani ID modela
             modelIDInput.value = modelDropdown.value;
         }
+        document.getElementById('slike').addEventListener('change', function() {
+        var files = this.files; // Dobivanje odabranih datoteka
+        var maxFiles = 3; // Maksimalni broj datoteka
+
+        // Provjera je li broj odabranih datoteka veći od maksimalnog
+        if (files.length > maxFiles) {
+            // Prikaz poruke korisniku
+            alert('Možete odabrati najviše 3 slike.');
+            // Resetiranje input polja za odabir slika kako bi korisnik mogao ponovno odabrati
+            this.value = '';
+        }
+    });
+
     </script>
 
 

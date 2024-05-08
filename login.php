@@ -44,28 +44,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <title>PRIJAVA</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 </head>
 <body>
     
-    <h1>PRIJAVA</h1>
-    
-    <?php if ($is_invalid): ?>
-    <div class="error-box">Neispravni podaci za prijavu. Molimo pokušajte ponovno.</div>
-    <?php endif; ?>
-    
-    <form method="post">
-        <label for="email">email</label>
-        <input type="email" name="email_adresa" id="email_adresa"
-               value="<?= htmlspecialchars($_POST["email_adresa"] ?? "") ?>"  required>
+    <div class="container mt-5">
+        <h1>PRIJAVA</h1>
         
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required>
+        <?php if ($is_invalid): ?>
+        <div class="alert alert-danger" role="alert">Neispravni podaci za prijavu. Molimo pokušajte ponovno.</div>
+        <?php endif; ?>
         
-        <button>Prijava</button>
-    </form>
-    <p>Nemaš račun? <a href="signup.php">Stvori ga!</a></p>
+        <form method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email_adresa" id="email_adresa"
+                       value="<?= htmlspecialchars($_POST["email_adresa"] ?? "") ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Prijava</button>
+        </form>
+        <p class="mt-3">Nemaš račun? <a href="signup.php">Stvori ga!</a></p>
+    </div>
     
 </body>
 </html>
+

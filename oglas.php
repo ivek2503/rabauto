@@ -206,7 +206,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <button type="submit" class="btn btn-success" onclick="return confirm('Jeste li sigurni da je oglas prodan?')">Prodano</button>
                         </form>
                     <?php endif; ?>
+                    <?php
 
+if (isset($_SESSION["user_id"]) && $row_oglas['ID_prodavaca'] != $_SESSION["user_id"]) {
+?>
+<div class="row justify-content-center mt-3">
+    <div class="col-md-6">
+        <form action="posalji_poruku.php" method="post">
+            <input type="hidden" name="oglas_id" value="<?php echo $oglas_id; ?>">
+            <div class="mb-3">
+                <label for="poruka" class="form-label">Vaša poruka:</label>
+                <textarea class="form-control" id="poruka" name="poruka" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Pošalji</button>
+        </form>
+    </div>
+</div>
+<?php
+}
+?>
                     <br>
                 </div>
 

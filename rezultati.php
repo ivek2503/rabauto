@@ -2,13 +2,7 @@
 session_start();
 
 // Povezivanje s bazom podataka
-$mysqli = new mysqli('localhost', 'root', '', 'zavrsni_ivan_magdalenic');
-
-// Provjera povezivanja s bazom podataka
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
+include "database.php";
 // Provjera korisnikove sesije
 if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
@@ -49,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $maxCijena = $_POST['max_cijena'];
     $minSnaga = $_POST['min_snaga'];
     $maxSnaga = $_POST['max_snaga'];
-
     // Sastavljanje SQL upita za pretraživanje oglasa prema odabranim kriterijima
     $sql = "SELECT oglasi.*, modeli.*, marke.naziv_marke AS marka 
         FROM oglasi 
@@ -96,11 +89,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($maxSnaga)) {
         $sql .= " AND snaga <= '{$maxSnaga}'";
     }
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : ''; 
+    
+        switch ($sort) {
+            case 'kilometraza_asc':
+                $sql .= " ORDER BY kilometraza ASC";
+                break;
+            case 'kilometraza_desc':
+                $sql .= " ORDER BY kilometraza DESC";
+                break;
+            case 'godiste_asc':
+                $sql .= " ORDER BY godiste ASC";
+                break;
+            case 'godiste_desc':
+                $sql .= " ORDER BY godiste DESC";
+                break;
+            case 'cijena_asc':
+                $sql .= " ORDER BY cijena ASC";
+                break;
+            case 'cijena_desc':
+                $sql .= " ORDER BY cijena DESC";
+                break;
+            default:
+
+                $sql .= " ORDER BY ID ASC";
+                break;
+        }
+    }}
+    
+    //var_dump($sql);
     // Izvršavanje SQL upita i dohvaćanje rezultata
     $result_oglasi = $mysqli->query($sql);
 
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -114,6 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 </head>
 
 <body>
@@ -126,7 +151,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if ($_SERVER["REQUEST_METHOD"] == "POST") : ?>
             <!-- Prikaz rezultata pretraživanja -->
             <?php if ($result_oglasi->num_rows > 0) : ?>
-                <h2>Rezultati pretraživanja:</h2>
+                <h2>Rezultati pretraživanja:</h2><br>
+                <form method="GET" action="">
+    <div class="form-group">
+        <label for="sort">Sortiraj po:</label>
+        <select class="form-select" name="sort" id="sort">
+    <option value="kilometraza_asc"> Kilometraža - od najmanje</option>
+    <option value="kilometraza_desc"> Kilometraža - od najveće</option>
+    <option value="godiste_asc"> Godište - od najstarijeg</option>
+    <option value="godiste_desc"> Godište - od najmlađeg</option>
+    <option value="cijena_asc"> Cijena - od najmanje</option>
+    <option value="cijena_desc"> Cijena - od najveće</option>
+</select>
+
+    </div>
+</form><br>
                 <ul>
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         <?php while ($row_oglas = $result_oglasi->fetch_assoc()) : ?>
@@ -187,5 +226,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
+<script>
+    // Funkcija za automatsko slanje forme pri odabiru opcije iz dropdowna
+    document.getElementById('sort').addEventListener('change', function() {
+        this.form.submit();
+    });
+</script>
 
 </html>

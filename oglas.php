@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-$mysqli = new mysqli('localhost', 'root', '', 'zavrsni_ivan_magdalenic');
-// Provjera povezivanja s bazom podataka
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
+include "database.php";
 
 // Provjera korisnikove sesije
 if (!isset($_SESSION["user_id"])) {
@@ -60,11 +56,9 @@ if (isset($_GET['id'])) {
     exit;
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Provjera postojanja parametra 'action'
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
         if ($action === 'ukloni') {
-            // Uklonite oglas postavljanjem statusa na 0 u bazi podataka
             $oglas_id = $_POST['oglas_id'];
             $sql_update = "UPDATE oglasi SET aktivan = 0 WHERE ID = $oglas_id";
             if ($mysqli->query($sql_update) === TRUE) {
@@ -72,9 +66,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "<p>Greška prilikom uklanjanja oglasa: " . $mysqli->error . "</p>";
             }
+        } elseif ($action === 'prodano') {
+            $oglas_id = $_POST['oglas_id'];
+            $sql_update = "UPDATE oglasi SET aktivan = 0, prodan = 1 WHERE ID = $oglas_id";
+            if ($mysqli->query($sql_update) === TRUE) {
+                header("location:/rabauto");
+            } else {
+                echo "<p>Greška prilikom označavanja oglasa kao prodanog: " . $mysqli->error . "</p>";
+            }
+        } elseif ($action === 'vrati') {
+            $oglas_id = $_POST['oglas_id'];
+            $sql_update = "UPDATE oglasi SET aktivan = 1, prodan = 0 WHERE ID = $oglas_id";
+            if ($mysqli->query($sql_update) === TRUE) {
+                header("location:/rabauto");
+            } else {
+                echo "<p>Greška prilikom vraćanja oglasa: " . $mysqli->error . "</p>";
+            }
         }
     }
 }
+
+
 
 
 ?>
@@ -103,19 +115,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 margin: 0 5px;
             }
         }
-        
     </style>
 </head>
 
 <body>
     <?php include "nav.php" ?><br><br><br><br>
     <div class="container mt-5">
-        <!-- Prikaz slika oglasa -->
         <div class="row justify-content-center mt-3">
 
             <div class="col-md-6 text-center position-relative">
-                <img src="slike/<?php echo $slike[0]['url']; ?>" class="img-thumbnail oglasi-slika" alt="Oglasna slika" style="max-height: 70vh;">
-
+                <?php if (!empty($slike)) : ?>
+                    <img src="slike/<?php echo $slike[0]['url']; ?>" class="img-thumbnail oglasi-slika" alt="Oglasna slika" style="max-height: 70vh;">
+                <?php else : ?>
+                    <img src="nema-slike.jpg" class="img-thumbnail oglasi-slika" alt="Nema slike">
+                <?php endif; ?>
             </div>
         </div>
         <div class="row justify-content-center mt-3">
@@ -125,6 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             <?php endforeach; ?>
         </div><br>
+
         <hr>
         <h1 style="text-align: center; font-size: 2rem;">
             <?php echo $marka . ' ' . $model; ?>
@@ -170,29 +184,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </table>
             </div>
             <div class="row justify-content-center mt-3">
-            <div class="col-md-6">
-    <?php if ($user_id == $row_oglas['ID_prodavaca'] || $is_admin) : ?>
-        <form method="post" action="">
-            <input type="hidden" name="oglas_id" value="<?php echo $oglas_id; ?>">
-            <input type="hidden" name="action" value="ukloni">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Jeste li sigurni da želite ukloniti oglas?')">Ukloni</button>
-        </form>
-    <?php endif; ?>
-    <?php if ($user_id != $row_oglas['ID_prodavaca'] || $is_admin) : ?>
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-6">
-            <form method="post" action="">
-                <div class="mb-3">
-                    <label for="poruka" class="form-label">Poruka:</label>
-                    <textarea class="form-control" id="poruka" name="poruka" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Šalji</button>
-            </form>
-        </div>
-    </div>
-<?php endif; ?>
+                <div class="col-md-6">
+                    <?php if ($row_oglas['aktivan'] && ($user_id == $row_oglas['ID_prodavaca'] || $is_admin)) : ?>
+                        <form method="post" action="">
+                            <input type="hidden" name="oglas_id" value="<?php echo $oglas_id; ?>">
+                            <input type="hidden" name="action" value="ukloni">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Jeste li sigurni da želite ukloniti oglas?')">Ukloni</button>
+                        </form>
+                    <?php elseif (!$row_oglas['aktivan'] && ($user_id == $row_oglas['ID_prodavaca'] || $is_admin)) : ?>
+                        <form method="post" action="">
+                            <input type="hidden" name="oglas_id" value="<?php echo $oglas_id; ?>">
+                            <input type="hidden" name="action" value="vrati">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Jeste li sigurni da želite vratiti oglas?')">Vrati</button>
+                        </form>
+                    <?php endif; ?>
 
-</div>
+                    <?php if ($row_oglas['aktivan'] && $user_id == $row_oglas['ID_prodavaca'] && !$row_oglas['prodan']) : ?>
+                        <form method="post" action="">
+                            <input type="hidden" name="oglas_id" value="<?php echo $oglas_id; ?>">
+                            <input type="hidden" name="action" value="prodano">
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Jeste li sigurni da je oglas prodan?')">Prodano</button>
+                        </form>
+                    <?php endif; ?>
+
+                    <br>
+                </div>
 
             </div>
         </div>

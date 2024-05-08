@@ -1,12 +1,7 @@
 <?php
 session_start();
 
-$mysqli = new mysqli('localhost', 'root', '', 'zavrsni_ivan_magdalenic');
-// Provjera povezivanja s bazom podataka
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
+include "database.php";
 // Provjera korisnikove sesije
 if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2024 at 05:32 PM
+-- Generation Time: May 08, 2024 at 07:10 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,12 +43,12 @@ CREATE TABLE `korisnici` (
 
 INSERT INTO `korisnici` (`ID`, `ime`, `prezime`, `username`, `email_adresa`, `hash_lozinka`, `admin`) VALUES
 (1, 'ivan', 'Magdalenić', 'ivek', 'magdalenic84@gmail.com', '$2y$10$Bfv01w4U5xWkEiMB8W5Yj.a2JakYFJ9U4xH9UU3BBAeLq2UQvJ9aO', 1),
-(6, 'ivan', 'Magdalenić', 'Ivek1', 'ivanpivan84@gmail.com', '$2y$10$uZ.mSszmrD8KTbpJmALJCedi76CpyIruVASJN4tWLPHMawhNp5hm.', NULL),
 (8, 'sinisa', 'magdalenic', 'sinisa', 'cikoyuk@gmail.com', '$2y$10$fIfLs9Ah2Ure5IsLfVNSD.C6JtTLB4lxnAaIUrPMEJ6lQgP75RVFm', NULL),
 (9, 'niko', 'Magdalenić', 'nikec', 'nmagdalenic26@gmail.com', '$2y$10$lF7TXikCAkxSWAC11Phea.PTgi7nxjTTbbaQ6iw/137j4qse8H7im', NULL),
 (10, 'Franjo', 'Kranjcec', 'ferika', 'franjokranjcec9@gmail.com', '$2y$10$s7k065FOQSFYltAMhuokUuLrp1IR6BEsQsoAi9h/qbOWpaG7fou/e', NULL),
-(11, 'ivan', 'magdalenic', 'ivica123', 'ivan.magdalenic@skole.hr', '$2y$10$mZcQcM/woSi2efdRTqiIPuzcwTuxQGIqsRTTznS/IdGOUqghAtjQK', NULL),
-(12, 'Štefanija', 'Magdalenić', 'stefica', 'dekeki12@gmail.com', '$2y$10$iDhrNl0U.obAWHEPVofFYOoxXvT9PryAw3F5v8hW1z6ZTYGtX/xKG', NULL);
+(11, 'ivan', 'magdalenic', 'ivica123', 'ivan.magdalenic@skole.hr', '$2y$10$mZcQcM/woSi2efdRTqiIPuzcwTuxQGIqsRTTznS/IdGOUqghAtjQK', 0),
+(12, 'Štefanija', 'Magdalenić', 'stefica', 'dekeki12@gmail.com', '$2y$10$iDhrNl0U.obAWHEPVofFYOoxXvT9PryAw3F5v8hW1z6ZTYGtX/xKG', 1),
+(13, 'Ivan', 'Magdalenić', 'johny', 'ivanpivan84@gmail.com', '$2y$10$Gwm0tSiM0mukWj2Wdqhr3u.sfIDFFmMDyUEKah/hRovmwMhq9Xdme', 1);
 
 -- --------------------------------------------------------
 
@@ -80,7 +80,9 @@ INSERT INTO `marke` (`ID_marke`, `naziv_marke`) VALUES
 (12, 'Fiat'),
 (13, 'Mazda'),
 (14, 'Renault'),
-(15, 'Subaru');
+(15, 'Subaru'),
+(16, 'Škoda'),
+(17, 'Daewoo');
 
 -- --------------------------------------------------------
 
@@ -325,7 +327,8 @@ INSERT INTO `modeli` (`id_modela`, `id_marke`, `naziv_modela`) VALUES
 (224, 15, 'Sambar'),
 (225, 15, 'Domingo'),
 (226, 15, 'Lucra'),
-(227, 15, 'Stella');
+(227, 15, 'Stella'),
+(229, 16, 'Fabia');
 
 -- --------------------------------------------------------
 
@@ -344,27 +347,28 @@ CREATE TABLE `oglasi` (
   `ID_prodavaca` int(11) NOT NULL,
   `id_modela` int(11) DEFAULT NULL,
   `zupanija` int(11) NOT NULL,
-  `aktivan` tinyint(1) DEFAULT NULL
+  `aktivan` tinyint(1) DEFAULT NULL,
+  `prodan` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_croatian_ci;
 
 --
 -- Dumping data for table `oglasi`
 --
 
-INSERT INTO `oglasi` (`ID`, `cijena`, `opis`, `godiste`, `kilometraza`, `snaga`, `datum_objave`, `ID_prodavaca`, `id_modela`, `zupanija`, `aktivan`) VALUES
-(2, 795652, 'prodavlem auta', 1244, 381057, 171, '2024-03-05', 1, 12, 20, 1),
-(3, 404095, 'dghfgjh', 2017, 713015, 51, '2024-03-06', 1, 91, 20, 1),
-(4, 633518, 'prodavlem auta', 2010, 117769, 435, '2024-03-06', 1, 95, 20, 1),
-(5, 955307, 'dghdghd', 2019, 820494, 798, '2024-03-06', 1, 119, 20, 1),
-(6, 875977, 'prodavlem auta', 2008, 529454, 252, '2024-03-06', 1, 148, 20, 1),
-(7, 513965, 'fdhdgbd', 2011, 675176, 618, '2024-03-06', 1, 97, 20, 1),
-(8, 941897, 'bokic', 2006, 63261, 463, '2024-03-06', 1, 95, 20, 1),
-(9, 167587, 'fgfr', 2011, 125391, 238, '2024-03-06', 1, 108, 20, 1),
-(10, 12245, 'dhvfvuhf', 2008, 813080, 352, '2024-03-06', 1, 18, 20, 1),
-(11, 558466, 'etsziuzvio', 2008, 319992, 544, '2024-03-06', 1, 4, 20, 1),
-(12, 755593, 'bokic', 2012, 762139, 177, '2024-03-06', 1, 112, 20, 1),
-(13, 102566, 'Prodajem BMW E92 330i. Zvati na 0989818101', 2008, 600708, 471, '2024-03-08', 12, 18, 20, 1),
-(15, 246053, 'sdfgsfdgfsdg', 2010, 554199, 357, '2024-03-08', 12, 92, 4, 1);
+INSERT INTO `oglasi` (`ID`, `cijena`, `opis`, `godiste`, `kilometraza`, `snaga`, `datum_objave`, `ID_prodavaca`, `id_modela`, `zupanija`, `aktivan`, `prodan`) VALUES
+(2, 795652, 'prodavlem auta', 1244, 381057, 171, '2024-03-05', 1, 12, 20, 0, 1),
+(3, 404095, 'dghfgjh', 2017, 713015, 51, '2024-03-06', 1, 91, 20, 1, NULL),
+(4, 633518, 'prodavlem auta', 2010, 117769, 435, '2024-03-06', 1, 95, 20, 1, NULL),
+(5, 955307, 'dghdghd', 2019, 820494, 798, '2024-03-06', 1, 119, 20, 1, NULL),
+(6, 875977, 'prodavlem auta', 2008, 529454, 252, '2024-03-06', 1, 148, 20, 1, NULL),
+(7, 513965, 'fdhdgbd', 2011, 675176, 618, '2024-03-06', 1, 97, 20, 1, NULL),
+(8, 941897, 'bokic', 2006, 63261, 463, '2024-03-06', 1, 95, 20, 1, NULL),
+(9, 167587, 'fgfr', 2011, 125391, 238, '2024-03-06', 1, 108, 20, 1, NULL),
+(10, 12245, 'dhvfvuhf', 2008, 813080, 352, '2024-03-06', 1, 18, 20, 1, NULL),
+(11, 558466, 'etsziuzvio', 2008, 319992, 544, '2024-03-06', 1, 4, 20, 0, NULL),
+(12, 755593, 'bokic', 2012, 762139, 177, '2024-03-06', 1, 112, 20, 1, NULL),
+(13, 102566, 'Prodajem BMW E92 330i. Zvati na 0989818101', 2008, 600708, 471, '2024-03-08', 12, 18, 20, 1, NULL),
+(15, 246053, 'sdfgsfdgfsdg', 2010, 554199, 357, '2024-03-08', 12, 92, 4, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -483,19 +487,19 @@ ALTER TABLE `zupanije`
 -- AUTO_INCREMENT for table `korisnici`
 --
 ALTER TABLE `korisnici`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `marke`
 --
 ALTER TABLE `marke`
-  MODIFY `ID_marke` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `ID_marke` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `modeli`
 --
 ALTER TABLE `modeli`
-  MODIFY `id_modela` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=228;
+  MODIFY `id_modela` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
 
 --
 -- AUTO_INCREMENT for table `oglasi`

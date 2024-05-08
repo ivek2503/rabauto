@@ -148,9 +148,9 @@
             <label for="password_confirmation">ponovi lozinku</label>
             <input type="password" id="password_confirmation" name="password_confirmation" required>
         </div>
-        <button>Sign up</button>
+        <button>Registriraj se</button>
     </form>
-
+<p>već imaš račun? <a href="login.php">prijavi se!</a></p>
 </body>
 
 </html>

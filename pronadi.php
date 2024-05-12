@@ -1,36 +1,37 @@
 <?php
 session_start();
 
-// Povezivanje s bazom podataka
 include "database.php";
 
-// Provjera korisnikove sesije
 if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
     exit;
 }
 
-// Izvršite upit za dohvaćanje marki automobila
 $sql = "SELECT * FROM marke ORDER BY naziv_marke ASC";
 $result = $mysqli->query($sql);
 
-// Spremite rezultate u asocijativno polje
 $marke = [];
 while ($row = $result->fetch_assoc()) {
     $marke[$row['ID_marke']] = $row['naziv_marke'];
 }
 
-// Izvršite upit za dohvaćanje županija
 $sql_zupanije = "SELECT * FROM zupanije ORDER BY naziv ASC";
 $result_zupanije = $mysqli->query($sql_zupanije);
 
-// Spremite rezultate u asocijativno polje
 $zupanije = [];
 while ($row_zupanije = $result_zupanije->fetch_assoc()) {
     $zupanije[$row_zupanije['id_zupanije']] = $row_zupanije['naziv'];
 }
 
-
+// Provjera jesu li podaci poslani preko POST metode
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Spremanje podataka u session
+    $_SESSION['pretraga'] = $_POST;
+    // Preusmjeravanje na rezultati.php
+    header("Location: /rabauto/rezultati.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,24 +196,22 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
 
 
         $(document).ready(function() {
-            // Inicijalizacija klizača za kilometražu
             $("#kilometraza_slider").slider({
                 range: true,
                 min: 0,
-                max: 1000000, // Promijenite ovo prema potrebama
+                max: 1000000, 
                 step: 100,
-                values: [0, 1000000], // Početne vrijednosti
+                values: [0, 1000000], 
                 slide: function(event, ui) {
                     $("#min_kilometraza").val(ui.values[0]);
                     $("#max_kilometraza").val(ui.values[1]);
                 }
             });
 
-            // Postavljanje početnih vrijednosti tekstualnih polja na početne vrijednosti klizača
+
             $("#min_kilometraza").val($("#kilometraza_slider").slider("values", 0));
             $("#max_kilometraza").val($("#kilometraza_slider").slider("values", 1));
 
-            // Ažuriranje klizača kada se promijene tekstualna polja
             $("#min_kilometraza, #max_kilometraza").on("change", function() {
                 var minKilometraza = $("#min_kilometraza").val();
                 var maxKilometraza = $("#max_kilometraza").val();
@@ -220,12 +219,11 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
             });
         });
         document.addEventListener('DOMContentLoaded', function() {
-            // Postavljanje slušatelja promjene na padajuće izbornike godišta
-            document.getElementById('min_godiste').addEventListener('change', function() {
-                var minGodiste = parseInt(this.value); // Dobivanje odabranog minimalnog godišta
-                var maxGodisteDropdown = document.getElementById('max_godiste'); // Padajući izbornik maksimalnog godišta
 
-                // Omogućiti sve opcije u padajućem izborniku maksimalnog godišta
+            document.getElementById('min_godiste').addEventListener('change', function() {
+                var minGodiste = parseInt(this.value); 
+                var maxGodisteDropdown = document.getElementById('max_godiste');
+
                 for (var i = 1970; i <= 2024; i++) {
                     var option = maxGodisteDropdown.querySelector('option[value="' + i + '"]');
                     if (option !== null) {
@@ -233,7 +231,6 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                     }
                 }
 
-                // Onemogućiti opcije u padajućem izborniku maksimalnog godišta koje su manje od odabranog minimalnog godišta
                 for (var i = 1970; i < minGodiste; i++) {
                     var option = maxGodisteDropdown.querySelector('option[value="' + i + '"]');
                     if (option !== null) {
@@ -242,10 +239,9 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                 }
             });
             document.getElementById('max_godiste').addEventListener('change', function() {
-                var maxGodiste = parseInt(this.value); // Dobivanje odabranog maksimalnog godišta
-                var minGodisteDropdown = document.getElementById('min_godiste'); // Padajući izbornik minimalnog godišta
+                var maxGodiste = parseInt(this.value); 
+                var minGodisteDropdown = document.getElementById('min_godiste');
 
-                // Omogućiti sve opcije u padajućem izborniku minimalnog godišta
                 for (var i = 1970; i <= 2024; i++) {
                     var option = minGodisteDropdown.querySelector('option[value="' + i + '"]');
                     if (option !== null) {
@@ -253,7 +249,6 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                     }
                 }
 
-                // Onemogućiti opcije u padajućem izborniku minimalnog godišta koje su veće od odabranog maksimalnog godišta
                 for (var i = maxGodiste + 1; i <= 2024; i++) {
                     var option = minGodisteDropdown.querySelector('option[value="' + i + '"]');
                     if (option !== null) {
@@ -267,24 +262,23 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
 
 
         $(document).ready(function() {
-            // Inicijalizacija klizača za cijenu
+
             $("#cijena_slider").slider({
                 range: true,
                 min: 0,
-                max: 1000000, // Promijenite ovo prema potrebama
+                max: 1000000,
                 step: 100,
-                values: [0, 1000000], // Početne vrijednosti
+                values: [0, 1000000], 
                 slide: function(event, ui) {
                     $("#min_cijena").val(ui.values[0]);
                     $("#max_cijena").val(ui.values[1]);
                 }
             });
 
-            // Postavljanje početnih vrijednosti tekstualnih polja na početne vrijednosti klizača
             $("#min_cijena").val($("#cijena_slider").slider("values", 0));
             $("#max_cijena").val($("#cijena_slider").slider("values", 1));
 
-            // Ažuriranje klizača kada se promijene tekstualna polja
+
             $("#min_cijena, #max_cijena").on("change", function() {
                 var minCijena = $("#min_cijena").val();
                 var maxCijena = $("#max_cijena").val();
@@ -295,24 +289,22 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
 
 
         $(document).ready(function() {
-            // Inicijalizacija klizača za konjsku snagu
+           
             $("#snaga_slider").slider({
                 range: true,
                 min: 0,
-                max: 1000, // Promijenite ovo prema potrebama
-                step: 10, // Postavljanje koraka na 10
-                values: [0, 1000], // Početne vrijednosti
+                max: 1000, 
+                step: 10,
+                values: [0, 1000], 
                 slide: function(event, ui) {
             $("#min_snaga").val(ui.values[0]);
             $("#max_snaga").val(ui.values[1]);
         }
             });
 
-            // Postavljanje početnih vrijednosti tekstualnog polja na početne vrijednosti klizača
             $("#min_snaga").val($("#snaga_slider").slider("values", 0));
             $("#max_snaga").val($("#snaga_slider").slider("values", 1));
 
-            // Ažuriranje klizača kada se promijeni tekstualno polje
             $("#min_snaga, #max_snaga").on("change", function() {
         var minSnaga = parseInt($("#min_snaga").val());
         var maxSnaga = parseInt($("#max_snaga").val());
@@ -324,23 +316,18 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
 
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Postavljanje slušatelja promjene na padajući izbornik marke
             document.getElementById('marka').addEventListener('change', function() {
-                var markaId = this.value; // Dobivanje ID-a odabrane marke
-                var modelDropdown = document.getElementById('model'); // Padajući izbornik modela
+                var markaId = this.value;
+                var modelDropdown = document.getElementById('model');
 
-                // Poziv AJAX-a za dohvaćanje modela povezanih s odabranom markom
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
-                            // Očisti padajući izbornik modela
                             modelDropdown.innerHTML = '';
 
-                            // Parsiraj odgovor kao JSON
                             var models = JSON.parse(xhr.responseText);
 
-                            // Dodaj svaki model u padajući izbornik
                             var option = document.createElement('option');
                             option.text = "Odaberite model";
                             option.value = "";
@@ -352,13 +339,11 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
                                 modelDropdown.add(option);
                             });
                         } else {
-                            // Prikaz greške ako dođe do problema s AJAX-om
                             console.error('Problem s dohvaćanjem modela');
                         }
                     }
                 };
 
-                // Pošalji zahtjev na server
                 xhr.open('GET', 'dohvati_modele.php?marka_id=' + markaId, true);
                 xhr.send();
             });
@@ -368,12 +353,15 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
             var modelDropdown = document.getElementById('model');
             var modelIDInput = document.getElementById('model_id');
 
-            // Postavljanje vrijednosti skrivenog input elementa na odabrani ID modela
             modelIDInput.value = modelDropdown.value;
         }
     </script>
 
-
+<script>
+        if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

@@ -1,30 +1,44 @@
 <?php
 session_start();
 
-// Povezivanje s bazom podataka
+
 include "database.php";
 
-// Provjera korisnikove sesije
 if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
     exit;
 }
+define('SECRET_KEY', 'tajni_kljuc_za_hashiranje');
 
-// Izvršite upit za dohvaćanje marki automobila
+
+$user_id_hashed = hash_hmac('sha256', $_SESSION["user_id"], SECRET_KEY);
+
+
+if (!isset($_COOKIE['user_id']) || $_COOKIE['user_id'] !== $user_id_hashed) {
+
+    session_unset();
+    session_destroy();
+    
+
+    header("Location: /rabauto/login.php");
+    exit;
+}
+
+
 $sql = "SELECT * FROM marke ORDER BY naziv_marke ASC";
 $result = $mysqli->query($sql);
 
-// Spremite rezultate u asocijativno polje
+
 $marke = [];
 while ($row = $result->fetch_assoc()) {
     $marke[$row['ID_marke']] = $row['naziv_marke'];
 }
 
-// Izvršite upit za dohvaćanje županija
+
 $sql_zupanije = "SELECT * FROM zupanije ORDER BY naziv ASC";
 $result_zupanije = $mysqli->query($sql_zupanije);
 
-// Spremite rezultate u asocijativno polje
+
 $zupanije = [];
 while ($row_zupanije = $result_zupanije->fetch_assoc()) {
     $zupanije[$row_zupanije['id_zupanije']] = $row_zupanije['naziv'];

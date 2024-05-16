@@ -25,6 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             $_SESSION["user_id"] = $user["ID"];
             
+            // Tajni ključ za hashiranje (pohranite ovo na sigurnom mjestu)
+            $secret_key = 'tajni_kljuc_za_hashiranje';
+            
+            // Hashiranje ID-a i emaila
+            $user_id_hashed = hash_hmac('sha256', $user["ID"], $secret_key);
+            $email_hashed = hash_hmac('sha256', $user["email_adresa"], $secret_key);
+            
+            // Postavljanje kolačića
+            setcookie('user_id', $user_id_hashed, time() + (86400 * 30), "/"); // 30 dana
+            setcookie('user_email', $email_hashed, time() + (86400 * 30), "/"); // 30 dana
+
             if ($user["admin"] == 1) {
                 header("Location: admin.php");
             } else {
@@ -75,4 +86,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
 </body>
 </html>
-

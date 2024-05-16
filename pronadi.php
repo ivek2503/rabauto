@@ -7,7 +7,21 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
     exit;
 }
+define('SECRET_KEY', 'tajni_kljuc_za_hashiranje');
 
+
+$user_id_hashed = hash_hmac('sha256', $_SESSION["user_id"], SECRET_KEY);
+
+
+if (!isset($_COOKIE['user_id']) || $_COOKIE['user_id'] !== $user_id_hashed) {
+
+    session_unset();
+    session_destroy();
+    
+
+    header("Location: /rabauto/login.php");
+    exit;
+}
 $sql = "SELECT * FROM marke ORDER BY naziv_marke ASC";
 $result = $mysqli->query($sql);
 
@@ -24,11 +38,11 @@ while ($row_zupanije = $result_zupanije->fetch_assoc()) {
     $zupanije[$row_zupanije['id_zupanije']] = $row_zupanije['naziv'];
 }
 
-// Provjera jesu li podaci poslani preko POST metode
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Spremanje podataka u session
+
     $_SESSION['pretraga'] = $_POST;
-    // Preusmjeravanje na rezultati.php
+
     header("Location: /rabauto/rezultati.php");
     exit;
 }

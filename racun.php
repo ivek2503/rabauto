@@ -9,6 +9,21 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: /rabauto/login.php");
     exit;
 }
+define('SECRET_KEY', 'tajni_kljuc_za_hashiranje');
+
+
+$user_id_hashed = hash_hmac('sha256', $_SESSION["user_id"], SECRET_KEY);
+
+
+if (!isset($_COOKIE['user_id']) || $_COOKIE['user_id'] !== $user_id_hashed) {
+
+    session_unset();
+    session_destroy();
+    
+
+    header("Location: /rabauto/login.php");
+    exit;
+}
 $is_admin = false;
 $user_id = $_SESSION["user_id"];
 $sql_check_admin = "SELECT admin FROM korisnici WHERE ID = $user_id";
@@ -19,17 +34,16 @@ if ($result_check_admin->num_rows > 0) {
     $is_admin = $row['admin'] == 1;
 }
 
-// Ako korisnik nije administrator, preusmjeri ga na drugu stranicu
+
 
 $user_id = $_SESSION["user_id"];
 
-// Izvršavanje upita za dohvaćanje podataka o korisniku iz baze
 $sql = "SELECT ime, prezime, username, email_adresa FROM korisnici WHERE id = $user_id";
 $result = $mysqli->query($sql);
 
-// Provjera jesu li podaci o korisniku pronađeni
+
 if ($result->num_rows > 0) {
-    // Dohvaćanje podataka o korisniku
+
     $row = $result->fetch_assoc();
     $ime = $row["ime"];
     $prezime = $row["prezime"];
@@ -91,18 +105,15 @@ $result_oglasi = $mysqli->query($sql_oglasi);
                         <?php
                         $marka = $row_oglas['marka'];
                         $model = $row_oglas['naziv_modela'];
-                        // Dohvati ID oglasa
+
                         $oglas_id = $row_oglas['ID'];
-                        //var_dump($row_oglas);
-                        //var_dump($oglas_id);
-                        // Upit za dohvat prvog url-a slike oglasa
+
                         $sql_slike = "SELECT url FROM slike WHERE id_oglas = $oglas_id LIMIT 1";
 
                         $result_slike = $mysqli->query($sql_slike);
-                        //var_dump($result_slike);
+
                         $row_slika = $result_slike->fetch_assoc();
 
-                        // Ako postoji rezultat, dohvati url slike
                         if ($row_slika) {
                             $slika_url = "slike/" . $row_slika["url"];
                         } else {
@@ -112,7 +123,7 @@ $result_oglasi = $mysqli->query($sql_oglasi);
 
                         ?>
 
-                        <!-- Kartica za prikaz oglasa -->
+
                         <div class="col">
                             <a href="oglas.php?id=<?php echo $oglas_id; ?>" style="text-decoration:none;">
                                 <div class="card">
